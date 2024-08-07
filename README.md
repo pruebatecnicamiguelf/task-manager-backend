@@ -51,7 +51,7 @@ El sistema de tokens de la aplicación soporta dos implementaciones para la blac
 
 Por defecto, el archivo de configuración application.properties incluye las siguientes propiedades:
 
-```
+```properties
    spring.application.name=task-manager
    spring.datasource.url=jdbc:h2:mem:task-manager-db
    spring.datasource.driver-class-name=org.h2.Driver
