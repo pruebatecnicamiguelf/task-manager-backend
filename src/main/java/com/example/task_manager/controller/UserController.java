@@ -23,6 +23,7 @@ import com.example.task_manager.service.TokenBlacklistService;
 import com.example.task_manager.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<ApiResponse<UserResponseDTO>> registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
             UserResponseDTO response = userService.registerUser(userDTO);
 
@@ -65,7 +66,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthenticationResponse>> login(
-            @RequestBody AuthenticationRequest authenticationRequest) {
+            @RequestBody @Valid AuthenticationRequest authenticationRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
@@ -74,7 +75,6 @@ public class UserController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Set<Role> roles = userService.getRolesByUserName(userDetails.getUsername());
 
-            // Convertir roles a String
             Set<String> roleNames = roles.stream().map(Role::name).collect(Collectors.toSet());
 
             String jwt = jwtUtil.generateToken(userDetails.getUsername(), roleNames);

@@ -2,10 +2,15 @@ package com.example.task_manager.controller;
 
 import com.example.task_manager.dto.ApiResponse;
 import com.example.task_manager.dto.TaskDTO;
+import com.example.task_manager.exception.ResourceNotFoundException;
 import com.example.task_manager.model.Task;
 import com.example.task_manager.service.TaskServiceImpl;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
+@Validated
 public class TaskController {
     private final TaskServiceImpl taskService;
 
@@ -21,7 +27,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<TaskDTO>> createTask(@RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<ApiResponse<TaskDTO>> createTask(@RequestBody @Valid TaskDTO taskDTO) {
         Task task = taskService.createTask(taskDTO.toTask());
         ApiResponse<TaskDTO> response = new ApiResponse<>(HttpStatus.CREATED.value(), "Task created successfully",
                 TaskDTO.fromTask(task));
@@ -40,21 +46,15 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TaskDTO>> getTaskById(@PathVariable Long id) {
-        return taskService.getTaskById(id)
-                .map(task -> {
-                    ApiResponse<TaskDTO> response = new ApiResponse<>(HttpStatus.OK.value(),
-                            "Task retrieved successfully", TaskDTO.fromTask(task));
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    ApiResponse<TaskDTO> response = new ApiResponse<>(HttpStatus.NOT_FOUND.value(), "Task not found",
-                            null);
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                });
+        Task task = taskService.getTaskById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        ApiResponse<TaskDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Task retrieved successfully",
+                TaskDTO.fromTask(task));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<TaskDTO>> updateTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO) {
+    public ResponseEntity<ApiResponse<TaskDTO>> updateTask(@PathVariable Long id, @RequestBody @Valid TaskDTO taskDTO) {
         Task updatedTask = taskService.updateTask(id, taskDTO.toTask());
         ApiResponse<TaskDTO> response = new ApiResponse<>(HttpStatus.OK.value(), "Task updated successfully",
                 TaskDTO.fromTask(updatedTask));

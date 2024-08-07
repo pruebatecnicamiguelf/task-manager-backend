@@ -3,11 +3,22 @@ package com.example.task_manager.dto;
 import com.example.task_manager.model.Status;
 import com.example.task_manager.model.Task;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 public class TaskDTO {
     private Long id;
+
+    @NotBlank(message = "Title is required")
     private String title;
+
+    @NotBlank(message = "Description is required")
     private String description;
-    private Status status;
+    
+    @NotNull(message = "Status cannot be null")
+    @Pattern(regexp = "PENDING|COMPLETED", message = "Status must be either 'PENDING' or 'COMPLETED'")
+    private String status;
 
     public Long getId() {
         return id;
@@ -33,11 +44,11 @@ public class TaskDTO {
         this.description = description;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -46,7 +57,9 @@ public class TaskDTO {
         task.setId(id);
         task.setTitle(title);
         task.setDescription(description);
-        task.setStatus(status);
+        if (status != null) {
+            task.setStatus(Status.valueOf(status)); // Convertir de String a Status enum
+        }
         return task;
     }
 
@@ -55,7 +68,7 @@ public class TaskDTO {
         taskDTO.setId(task.getId());
         taskDTO.setTitle(task.getTitle());
         taskDTO.setDescription(task.getDescription());
-        taskDTO.setStatus(task.getStatus());
+        taskDTO.setStatus(task.getStatus().name()); // Convertir de Status enum a String
         return taskDTO;
     }
 

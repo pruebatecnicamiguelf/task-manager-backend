@@ -38,21 +38,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Optional<Task> getTaskById(Long id) {
-        Task task = taskRepository.findById(id)
+        return taskRepository.findById(id)
+                .filter(task -> task.getUser().equals(getCurrentUser()))
+                .map(Optional::of)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-        if (!task.getUser().equals(getCurrentUser())) {
-            throw new ResourceNotFoundException("Task not found");
-        }
-        return Optional.of(task);
     }
 
     @Override
     public Task updateTask(Long id, Task task) {
         Task existingTask = taskRepository.findById(id)
+                .filter(t -> t.getUser().equals(getCurrentUser()))
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-        if (!existingTask.getUser().equals(getCurrentUser())) {
-            throw new ResourceNotFoundException("Task not found");
-        }
+    
+        // Imprimir para depuración
+        System.out.println("Existing Task: " + existingTask);
+    
         existingTask.setTitle(task.getTitle());
         existingTask.setDescription(task.getDescription());
         existingTask.setStatus(task.getStatus());
@@ -62,10 +62,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(Long id) {
         Task existingTask = taskRepository.findById(id)
+                .filter(t -> t.getUser().equals(getCurrentUser()))
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
-        if (!existingTask.getUser().equals(getCurrentUser())) {
-            throw new ResourceNotFoundException("Task not found");
-        }
         taskRepository.delete(existingTask);
     }
 
