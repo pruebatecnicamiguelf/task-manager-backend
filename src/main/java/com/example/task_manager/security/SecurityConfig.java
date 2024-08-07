@@ -31,17 +31,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/auth/**", "/h2-console/**").permitAll() // Permitir acceso a la consola H2
+                .requestMatchers("/auth/**", "/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() 
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .headers(headers -> headers.frameOptions().disable()) // Necesario para permitir iframes de la consola H2
+            .headers(headers -> headers.frameOptions().disable())
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
+    
         return http.build();
     }
+    
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
