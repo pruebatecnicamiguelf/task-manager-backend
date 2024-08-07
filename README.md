@@ -69,6 +69,22 @@ Por defecto, el archivo de configuración application.properties incluye las sig
    token.blacklist.implementation=database
 ```
 
+Para alternar entre las implementaciones, comenta o descomenta las líneas correspondientes:
+
+Para usar la blacklist en memoria, descomenta #token.blacklist.implementation=memory.
+Para usar la blacklist en base de datos, descomenta token.blacklist.implementation=database.
+
+### Consola H2
+
+La consola de la base de datos H2 está habilitada por defecto. Para acceder a la consola H2:
+
+   1. Asegúrate de que la aplicación esté en ejecución.
+   2. Abre tu navegador y ve a http://localhost:8080/h2-console.
+   3. Usa la siguiente configuración para conectarte:
+      - JDBC URL: jdbc:h2:mem:task-manager-db
+      - User Name: user
+      - Password: user123
+
 ### Notas
 
 - **JWT:** La aplicación utiliza JWT para la autenticación.
