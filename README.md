@@ -13,7 +13,9 @@ Este directorio contiene el backend de la aplicación Task Manager, desarrollado
 
    ```bash
    git clone https://github.com/pruebatecnicamiguelf/task-manager-backend.git
-   cd task-manager/backend
+   cd task-manager-backend
+
+   ```
 
 2. **Configurar la base de datos**
 
@@ -28,6 +30,8 @@ Este directorio contiene el backend de la aplicación Task Manager, desarrollado
    spring.h2.console.enabled=true
    spring.h2.console.path=/h2-console
 
+   ```
+
 3. **Compilar y ejecutar el backend**
 
    Compila y ejecuta la aplicación usando Maven:
@@ -35,14 +39,37 @@ Este directorio contiene el backend de la aplicación Task Manager, desarrollado
    ```bash
    mvn clean install
    mvn spring-boot:run
-
+   ```
 
 ### Documentación de la API
 
 Swagger está configurado para la documentación de la API. Puedes acceder a ella en http://localhost:8080/swagger-ui/index.html.
 
+### Configuración de Token Blacklist
+
+El sistema de tokens de la aplicación soporta dos implementaciones para la blacklist de tokens: en memoria y en base de datos. Puedes configurar la implementación deseada en el archivo application.properties ubicado en src/main/resources.
+
+Por defecto, el archivo de configuración application.properties incluye las siguientes propiedades:
+
+```
+   spring.application.name=task-manager
+   spring.datasource.url=jdbc:h2:mem:task-manager-db
+   spring.datasource.driver-class-name=org.h2.Driver
+   spring.datasource.username=user
+   spring.datasource.password=user123
+   spring.h2.console.enabled=true
+   spring.jpa.hibernate.ddl-auto=update
+   jwt.secret=your-very-secret-key-which-should-be-long-enough
+   jwt.expiration=3600000
+
+   # Para usar token black-list en memoria
+   #token.blacklist.implementation=memory
+
+   # Para usar token black-list en base de datos
+   token.blacklist.implementation=database
+```
+
 ### Notas
 
-   - **JWT:** La aplicación utiliza JWT para la autenticación.
-   - **CORS:** Asegúrate de que el CORS esté configurado correctamente si cambias el origen del frontend.
-
+- **JWT:** La aplicación utiliza JWT para la autenticación.
+- **CORS:** Asegúrate de que el CORS esté configurado correctamente si cambias el origen del frontend.
