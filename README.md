@@ -12,7 +12,7 @@ Este directorio contiene el backend de la aplicación Task Manager, desarrollado
 1. **Clonar el repositorio**
 
    ```bash
-   git clone https://github.com/usuario/task-manager.git
+   git clone https://github.com/pruebatecnicamiguelf/task-manager-backend.git
    cd task-manager/backend
 
 2. **Configurar la base de datos**
